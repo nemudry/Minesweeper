@@ -18,7 +18,7 @@ namespace MinesweeperGame.ConsoleTest;
                 {
                     for (int j = 0; j < game.Width; j++)
                     {
-                        var cell = game.Field[i, j];
+                        var cell = game.Field[i][j];
                         if (cell.IsOpened)
                             Color.GreenShort(cell.CellValue);
                         else
@@ -31,9 +31,9 @@ namespace MinesweeperGame.ConsoleTest;
                 int row = ValidatorInput.GetChechedAnswer("Введите номер ряда:", new string[game.Height]);
                 int column = ValidatorInput.GetChechedAnswer("Введите номер колонки:", new string[game.Width]);
 
-                var choosenCell = game.Field[row, column];
-                game.OpenCell(choosenCell);
-                game.GameEndCheck(choosenCell);
+                var choosenCell = game.Field[row][column];
+                game.OpenCell(choosenCell.CellRow, choosenCell.CellColumn);
+                game.GameEndCheck(choosenCell.CellRow, choosenCell.CellColumn);
                 Feedback.AcceptPlayer();
             }
             Console.WriteLine("Игра закончена");
@@ -41,7 +41,7 @@ namespace MinesweeperGame.ConsoleTest;
             {
                 for (int j = 0; j < game.Width; j++)
                 {
-                    var cell = game.Field[i, j];
+                    var cell = game.Field[i][j];
                     if (cell.IsOpened)
                         Color.GreenShort(cell.CellValue);
                     else
