@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Games.Models;
 
-namespace MinesweeperGame.Models; 
+namespace Games.MinesweeperGame.Models; 
 
-public class Minesweeper
+public class Minesweeper: Game
 {
-    //id
-    public string Game_id { get; }
     //ширина
     [Range(2, 30, ErrorMessage = "Ширина поля должна быть не менее {1} и не более {2}")]
     public int Width { get; }
@@ -13,6 +12,7 @@ public class Minesweeper
     [Range(2, 30, ErrorMessage = "Высота поля должна быть не менее {1} и не более {2}")]
     public int Height { get; }
     //количество мин
+    [Range(1, 899, ErrorMessage = "Количество мин должно быть больше 1 и не более количества клеток - 1")]
     public int Mines_count { get; }
     //статус игры
     public bool Completed { get; private set; }
@@ -20,11 +20,11 @@ public class Minesweeper
     public List<List<Cell>> Field { get; private set; }
 
     public Minesweeper(int width, int height, int minesCount)
+        : base ()
     {
-        Game_id = Guid.NewGuid().ToString();
         Width = width;
         Height = height;
-        Mines_count = minesCount;
+        Mines_count = minesCount < (Height * Width) ? minesCount : 0; // если кол-во мин больше количества клеток - зануление мин
         Completed = false;
         Field = new List<List<Cell>>(Height);
         SetMinesweeper();

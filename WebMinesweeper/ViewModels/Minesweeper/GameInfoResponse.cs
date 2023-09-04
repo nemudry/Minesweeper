@@ -1,7 +1,7 @@
-﻿using MinesweeperGame.Models;
+﻿using Games.MinesweeperGame.Models;
 using System.Text.Json.Serialization;
 
-namespace MinesweeperGame.Web.ViewModels;
+namespace Games.Web.MinesweeperGame.ViewModels;
 
 //информация об игре
 public class GameInfoResponse

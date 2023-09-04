@@ -1,4 +1,4 @@
-﻿namespace MinesweeperGame.Models;
+﻿namespace Games.MinesweeperGame.Models;
 
 //ячейка поля
 public class Cell

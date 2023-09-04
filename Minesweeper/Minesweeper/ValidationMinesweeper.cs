@@ -1,26 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MinesweeperGame.Models;
+﻿using Games.MinesweeperGame.Models;
 
-namespace MinesweeperGame.Web.Util;
+namespace Games.MinesweeperGame.Validation;
 
 //валидация сапера
 public static class ValidationMinesweeper
 {
-    //валидация новой игры
-    public static string? ValidateNewMinesweeper(Minesweeper minesweeper)
-    {
-        string? errors;
-        var results = new List<ValidationResult>();
-        var context = new ValidationContext(minesweeper);
-        if (Validator.TryValidateObject(minesweeper, context, results, true))
-            errors = null;
-        else
-            errors = string.Join("\n", results);
-        return errors;
-    }
-
     //валидация запроса 
-    public static string? ValidateRequest(Minesweeper minesweeper, int row, int col)
+    public static string? ValidateInfoRequestMinesweeper(Minesweeper minesweeper, int row, int col)
     {
         string? errors;
         errors = ValidateCompliteMinesweeper(minesweeper);

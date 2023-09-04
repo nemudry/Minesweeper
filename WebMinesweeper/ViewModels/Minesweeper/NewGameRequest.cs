@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinesweeperGame.Web.ViewModels;
+namespace Games.Web.MinesweeperGame.ViewModels;
 
 //запрос на новую игру
 public class NewGameRequest

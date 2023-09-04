@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinesweeperGame.Web.ViewModels;
+namespace Games.Web.ViewModels;
 
 //ответ ошибка
 public class ErrorResponse

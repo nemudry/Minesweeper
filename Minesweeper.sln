@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Minesweeper\Models.csproj", "{1CE48E3A-8574-489C-813D-29FFF0A84E24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMinesweeper", "WebMinesweeper\WebMinesweeper.csproj", "{C48EA661-F940-4649-83CB-624BEBA7AAC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "WebMinesweeper\Web.csproj", "{C48EA661-F940-4649-83CB-624BEBA7AAC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
