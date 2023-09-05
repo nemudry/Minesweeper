@@ -2,58 +2,61 @@ using Microsoft.AspNetCore.Mvc;
 using Games.Models;
 using Games.MinesweeperGame.Models;
 using Games.MinesweeperGame.Validation;
-using Games.Web.ViewModels;
 using Games.Web.MinesweeperGame.ViewModels;
-
+using static Games.Web.Util.ErrorsHandler;
 
 namespace Games.Web.Controllers;
 
+// игровой ход
 [Route("minesweeper/api/[controller]")]
 [ApiController]
 public class TurnController : ControllerBase
 {
-
-    private readonly ILogger<TurnController> _logger;
-
-    private readonly GamesProvider gamesProvider;
+    private readonly ILogger<TurnController> _logger; // лог
+    private readonly GamesProvider gamesProvider; // игровой центр
     public TurnController(ILogger<TurnController> logger, GamesProvider gamesProvider)
     {   
         _logger = logger;
         this.gamesProvider = gamesProvider;
     }
 
-
     [HttpPost]
     public IActionResult TurnGame()
     {
         if (Request.HasJsonContentType())
         {
-            var gameTurnRequest = new GameTurnRequest();
+            //получение запроса от клиента
+            GameTurnRequest? gameTurnRequest = null;
             try
             {
                 gameTurnRequest = Request.ReadFromJsonAsync<GameTurnRequest>().Result;
-                _logger.Log(LogLevel.Information, "Поступил жсон");
-                _logger.Log(LogLevel.Information, $"{gameTurnRequest.Game_id} {gameTurnRequest.Row} {gameTurnRequest.Col}");
+                _logger.LogInformation($"{DateTime.Now}. Запрос на игровой ход: {gameTurnRequest?.Game_id}, {gameTurnRequest?.Row}, {gameTurnRequest?.Col}.");
             }
             catch (Exception e)
             {
-                return new BadRequestObjectResult(new ErrorResponse(e.Message));
+                return LogAndFormError400(_logger, gameTurnRequest?.Game_id, e.Message);
             }
+            if (gameTurnRequest == null) 
+                return LogAndFormError400(_logger, null, "JSON на ход некорректный.");
 
-            var minesweeper = (Minesweeper)gamesProvider.GetGameById(gameTurnRequest.Game_id);
+            //получение игры из игрового центра
+            Minesweeper? minesweeper = gamesProvider.GetGameById(gameTurnRequest.Game_id) as Minesweeper;
+            if (minesweeper == null) 
+                return LogAndFormError400(_logger, gameTurnRequest.Game_id, "Игра не найдена");
+
+            //валидация запроса
             string? errors = ValidationMinesweeper.ValidateInfoRequestMinesweeper(minesweeper, gameTurnRequest.Row, gameTurnRequest.Col);
             if (errors != null)
-            {
-                return new BadRequestObjectResult(new ErrorResponse(errors));
-            }
+                return LogAndFormError400(_logger, minesweeper.Game_id, errors);
 
-            minesweeper.OpenCell(gameTurnRequest.Row, gameTurnRequest.Col);
-            minesweeper.GameEndCheck(gameTurnRequest.Row, gameTurnRequest.Col);
-            var gameInfoResponse = new GameInfoResponse(minesweeper);
-            return new JsonResult(gameInfoResponse);
+            minesweeper.OpenCell(gameTurnRequest.Row, gameTurnRequest.Col); //открыть ячейку
+            minesweeper.GameEndCheck(gameTurnRequest.Row, gameTurnRequest.Col); // проверить на окончание игры
+
+            _logger.LogInformation($"{DateTime.Now}. Cовершен ход: {minesweeper.Game_id}, {gameTurnRequest.Row}, " +
+                $"{gameTurnRequest.Col}. Статус завершения игры: {minesweeper.Completed}");
+            return new JsonResult(new GameInfoResponse(minesweeper)); // отправить поле сапера клиенту
         }
-
-        else return new BadRequestObjectResult(new ErrorResponse("В запросе отсутствует JSON"));
+        else 
+            return LogAndFormError400(_logger, "Игре не присвоен ID", "В запросе отсутствует JSON");
     }
-
 }
