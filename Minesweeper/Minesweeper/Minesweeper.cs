@@ -55,16 +55,21 @@ public class Minesweeper: Game
     //рандомно установить мины
     private void SetMines()
     {
+        //все клетки
+        List<Cell> allCels = new();
+        foreach (var row in Field)
+            foreach (var cell in row)
+                allCels.Add(cell);
+
+        //клетки без мин
+        var withoutMines = allCels.Where(c => c.CellValue != "X");
+
         var rand = new Random();
-        for (int i = 0; i < Mines_count; )
+        for (int i = 0; i < Mines_count; i++)
         {
             //рандомная клетка
-            var cell = Field[rand.Next(0, Height)][rand.Next(0, Width)];
-            if (cell.CellValue != "X")
-            {
-                cell.CellValue = "X";
-                i++;
-            }
+            var cell = withoutMines.ElementAt(rand.Next(0, withoutMines.Count()));
+            cell.CellValue = "X";
         }
     }
 
@@ -159,7 +164,7 @@ public class Minesweeper: Game
     }
 
     //открыть клетку
-    public void OpenCell(int row, int col)
+    private void OpenCell(int row, int col)
     {
         var cell = Field[row][col];
         cell.IsOpened = true;
@@ -178,7 +183,7 @@ public class Minesweeper: Game
     }
 
     //конец игры
-    public void GameEndCheck(int row, int col)
+    private void GameEndCheck(int row, int col)
     {
         var cell = Field[row][col];
         //подорвался
@@ -206,5 +211,12 @@ public class Minesweeper: Game
                 OpenAllCells();
             }
         }
+    }
+
+    //запуск игры
+    public void Start(int row, int col)
+    {
+        OpenCell(row, col); //открыть ячейку
+        GameEndCheck(row, col); // проверить на окончание игры
     }
 }
